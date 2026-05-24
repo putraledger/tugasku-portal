@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, User, GraduationCap, Shield, AlertCircle, CheckCircle2, BookOpen } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, GraduationCap, Shield, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('MAHASISWA');
+  const role = 'MAHASISWA';
   const [semester, setSemester] = useState('1');
   
   const [showPassword, setShowPassword] = useState(false);
@@ -162,51 +162,27 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Role Field */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Peran Sistem (Role)</label>
+            {/* Semester Field - For Mahasiswa */}
+            <div className="space-y-1.5 animate-fadeIn">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Semester Berjalan</label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <BookOpen className="w-4 h-4" />
+                  <GraduationCap className="w-4 h-4" />
                 </span>
                 <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  value={semester}
+                  onChange={(e) => setSemester(e.target.value)}
                   className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-200 focus:outline-none transition-all duration-300 shadow-inner appearance-none cursor-pointer"
                 >
-                  <option value="MAHASISWA">MAHASISWA</option>
-                  <option value="DOSEN">DOSEN</option>
-                  <option value="ADMIN">ADMIN</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
+                    <option key={num} value={num}>Semester {num}</option>
+                  ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-500">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                 </div>
               </div>
             </div>
-
-            {/* Semester Field - Conditionally Rendered for Mahasiswa */}
-            {role === 'MAHASISWA' && (
-              <div className="space-y-1.5 animate-fadeIn">
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Semester Berjalan</label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                    <GraduationCap className="w-4 h-4" />
-                  </span>
-                  <select
-                    value={semester}
-                    onChange={(e) => setSemester(e.target.value)}
-                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-200 focus:outline-none transition-all duration-300 shadow-inner appearance-none cursor-pointer"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
-                      <option key={num} value={num}>Semester {num}</option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-500">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Submit Button */}
             <button

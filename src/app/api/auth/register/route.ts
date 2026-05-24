@@ -8,19 +8,12 @@ import { getVerificationHtml } from '@/lib/email-templates';
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password, role, semester } = await request.json();
+    const { name, email, password, semester } = await request.json();
+    const role = Role.MAHASISWA;
 
-    if (!name || !email || !password || !role) {
+    if (!name || !email || !password) {
       return NextResponse.json(
         { error: 'Semua field wajib diisi.' },
-        { status: 400 }
-      );
-    }
-
-    // Validate role
-    if (!Object.values(Role).includes(role as Role)) {
-      return NextResponse.json(
-        { error: 'Role tidak valid.' },
         { status: 400 }
       );
     }
