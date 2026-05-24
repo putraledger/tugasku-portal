@@ -1,0 +1,96 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  DOSEN
+  MAHASISWA
+}
+
+enum TaskStatus {
+  BELUM_DIMULAI
+  SEDANG_DIKERJAKAN
+  SELESAI
+}
+
+enum EnrollmentStatus {
+  AKTIF
+  LULUS
+  ARCHIVED
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique // Menerima semua email (Gmail, Yahoo, dll)
+  password    String
+  role        Role         @default(MAHASISWA)
+  semester    Int?         // Khusus mahasiswa (Isi angka 1-8). Dosen/Admin di-set Null.
+  courses     Course[]     @relation("LecturerCourses")
+  enrollments Enrollment[]
+  submissions       Submission[]
+  createdAt         DateTime     @default(now())
+  emailVerified     DateTime?
+  verificationToken String?      @unique
+}
+
+model Course {
+  id          String       @id @default(uuid())
+  code        String       @unique // Contoh: "IF101"
+  name        String       // Contoh: "Struktur Data"
+  semester    Int          // Batasan semester mata kuliah (Angka 1-8)
+  lecturerId  String
+  lecturer    User         @relation("LecturerCourses", fields: [lecturerId], references: [id])
+  tasks       Task[]
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id         String           @id @default(uuid())
+  studentId  String
+  student    User             @relation(fields: [studentId], references: [id])
+  courseId   String
+  course     Course           @relation(fields: [courseId], references: [id])
+  status     EnrollmentStatus @default(AKTIF) // Berubah jadi ARCHIVED saat naik semester
+  createdAt  DateTime         @default(now())
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String
+  deadline    DateTime
+  courseId    String
+  course      Course       @relation(fields: [courseId], references: [id])
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+}
+
+model Submission {
+  id          String     @id @default(uuid())
+  taskId      String
+  task        Task       @relation(fields: [taskId], references: [id])
+  studentId   String
+  student     User       @relation(fields: [studentId], references: [id])
+  fileUrl     String     // Tautan file dari Supabase Storage / Uploadthing
+  status      TaskStatus @default(SELESAI)
+  grade       Int?       // Nilai angka 0-100 dari dosen
+  feedback    String?    // Catatan koreksi dari dosen
+  submittedAt DateTime   @default(now())
+}
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
