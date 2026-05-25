@@ -3,15 +3,16 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
-  BookOpen, 
   ArrowLeft, 
   Calendar, 
   FileText, 
-  ClipboardList, 
   AlertCircle,
   CheckCircle2
 } from 'lucide-react';
+import { AnimatedCard } from '@/components/ui/AnimatedCard';
+import { AnimatedButton } from '@/components/ui/AnimatedButton';
 
 interface CourseData {
   id: string;
@@ -48,7 +49,6 @@ function BuatTugasForm() {
         if (res.ok) {
           const data = await res.json();
           setCourses(data);
-          // If no preselected ID but we have courses, select first
           if (!preselectedCourseId && data.length > 0) {
             setCourseId(data[0].id);
           }
@@ -106,20 +106,20 @@ function BuatTugasForm() {
   };
 
   return (
-    <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl relative overflow-hidden">
-      <div className="absolute right-0 bottom-0 top-0 w-96 bg-gradient-to-l from-amber-500/5 to-transparent blur-3xl rounded-full -mr-20 pointer-events-none" />
+    <div className="bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-slideUp">
+      <div className="absolute right-0 bottom-0 top-0 w-96 bg-gradient-to-l from-indigo-500/5 to-transparent blur-3xl rounded-full -mr-20 pointer-events-none" />
       
       <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
         {/* Status Alerts */}
         {error && (
-          <div className="p-4 bg-red-950/20 border border-red-900/40 text-red-400 rounded-xl text-xs flex items-center space-x-2.5">
+          <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-650 dark:text-red-400 rounded-xl text-xs flex items-center space-x-2.5">
             <AlertCircle className="w-4.5 h-4.5 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="p-4 bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 rounded-xl text-xs flex items-center space-x-2.5">
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-650 dark:text-emerald-400 rounded-xl text-xs flex items-center space-x-2.5 animate-bounce-success">
             <CheckCircle2 className="w-4.5 h-4.5 shrink-0" />
             <span>{success}</span>
           </div>
@@ -127,18 +127,18 @@ function BuatTugasForm() {
 
         {/* Input Course */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Pilih Mata Kuliah</label>
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pilih Mata Kuliah</label>
           {loading ? (
-            <div className="h-10 bg-slate-950 border border-slate-800 rounded-xl animate-pulse" />
+            <div className="h-11 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 rounded-xl animate-pulse" />
           ) : (
             <select
               value={courseId}
               onChange={(e) => setCourseId(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-300 focus:outline-none focus:border-amber-500 transition-colors cursor-pointer"
+              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-3 px-4 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-550 transition-colors cursor-pointer"
             >
               {courses.map((course) => (
                 <option key={course.id} value={course.id}>
-                  {course.code} - {course.name} (Semester {course.semester})
+                  [{course.code}] {course.name} - Semester {course.semester}
                 </option>
               ))}
             </select>
@@ -147,40 +147,38 @@ function BuatTugasForm() {
 
         {/* Input Title */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Judul Tugas</label>
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Judul Tugas</label>
           <input
             type="text"
             placeholder="Contoh: Desain ERD Database Perpustakaan"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-3 px-4 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-650 focus:outline-none focus:border-indigo-550 transition-colors"
             required
           />
         </div>
 
         {/* Input Deadline */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Batas Waktu (Deadline)</label>
-          <div className="relative">
-            <input
-              type="datetime-local"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-300 focus:outline-none focus:border-amber-500 transition-colors cursor-pointer"
-              required
-            />
-          </div>
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Batas Waktu (Deadline)</label>
+          <input
+            type="datetime-local"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-3 px-4 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-550 transition-colors cursor-pointer"
+            required
+          />
         </div>
 
         {/* Input Description */}
         <div className="space-y-2">
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-400">Instruksi & Deskripsi Tugas</label>
+          <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Instruksi & Deskripsi Tugas</label>
           <textarea
             placeholder="Tuliskan instruksi pengerjaan tugas secara lengkap di sini. Cantumkan kriteria penilaian, format file, dan petunjuk lainnya..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={6}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl py-3 px-4 text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors resize-none leading-relaxed"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl py-3 px-4 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-650 focus:outline-none focus:border-indigo-550 transition-colors resize-none leading-relaxed"
             required
           />
         </div>
@@ -189,9 +187,9 @@ function BuatTugasForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold rounded-xl text-sm transition-all duration-300 shadow-lg shadow-amber-500/20 disabled:opacity-50 select-none cursor-pointer"
+          className="w-full py-4 bg-gradient-to-r from-indigo-500 to-violet-650 hover:from-indigo-600 hover:to-violet-750 text-white font-bold rounded-xl text-xs transition-all duration-300 shadow-lg shadow-indigo-500/20 disabled:opacity-50 select-none cursor-pointer"
         >
-          {submitting ? 'Mempublikasikan...' : 'Publikasikan Tugas'}
+          {submitting ? 'Mempublikasikan...' : 'Publikasikan Tugas Akademik'}
         </button>
       </form>
     </div>
@@ -199,55 +197,44 @@ function BuatTugasForm() {
 }
 
 export default function BuatTugasPage() {
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-16">
-      {/* Top Navbar */}
-      <nav className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-6">
-          <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-tr from-amber-500 to-orange-600 p-2 rounded-xl text-white shadow-lg shadow-amber-500/20">
-              <BookOpen className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-sm font-bold tracking-tight text-white">TugasKu Portal</h1>
-              <p className="text-[10px] text-amber-400 font-medium">Dashboard Dosen</p>
-            </div>
-          </div>
 
-          <div className="hidden md:flex items-center space-x-2 pl-4 border-l border-slate-800">
-            <Link 
-              href="/dashboard/dosen" 
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-colors hover:bg-slate-800/40"
-            >
-              Dashboard
-            </Link>
-            <Link 
-              href="/dashboard/dosen/courses" 
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-colors hover:bg-slate-800/40"
-            >
-              Mata Kuliah
-            </Link>
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans pb-16">
+      
+      {/* Top Navbar */}
+      <nav className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between shadow-sm">
+        <div className="flex items-center space-x-3">
+          <div className="relative w-8 h-8 rounded-lg overflow-hidden shadow border border-indigo-500/20 bg-slate-950 flex items-center justify-center">
+            <Image src="/logo.png" alt="StudyPulse Logo" fill className="object-cover" />
+          </div>
+          <div>
+            <h1 className="text-sm font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-650 bg-clip-text text-transparent">
+              StudyPulse
+            </h1>
+            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Lecturer Console</p>
           </div>
         </div>
 
-        <Link
-          href="/dashboard/dosen"
-          className="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors text-xs font-semibold"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Kembali</span>
-        </Link>
+        <div className="flex items-center space-x-3">
+          <Link
+            href="/dashboard/dosen"
+            className="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors text-xs font-semibold"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Kembali ke Dasbor</span>
+          </Link>
+        </div>
       </nav>
 
       {/* Content */}
       <main className="max-w-4xl mx-auto px-6 mt-8 space-y-6">
-        <div className="space-y-1">
-          <h2 className="text-xl md:text-2xl font-extrabold text-white">Buat Penugasan Baru</h2>
-          <p className="text-slate-500 text-xs">Isi formulir di bawah ini untuk menerbitkan tugas akademik ke mahasiswa.</p>
+        <div className="space-y-1 text-center sm:text-left">
+          <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white">Publikasikan Tugas Baru</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-xs">Buat lembar evaluasi penugasan akademik dan kirimkan langsung ke seluruh mahasiswa aktif kelas.</p>
         </div>
 
         <Suspense fallback={
-          <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 max-w-2xl mx-auto text-center text-slate-500 text-xs">
+          <div className="bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 max-w-2xl mx-auto text-center text-slate-550 text-xs">
             Memuat formulir...
           </div>
         }>

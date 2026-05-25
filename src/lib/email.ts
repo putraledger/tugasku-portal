@@ -21,8 +21,8 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
   }
 
   try {
-    const fromEmail = process.env.BREVO_FROM_EMAIL || 'noreply@tugasku.com';
-    const fromName = process.env.BREVO_FROM_NAME || 'TugasKu Portal';
+    const fromEmail = process.env.BREVO_FROM_EMAIL || 'noreply@studypulse.com';
+    const fromName = process.env.BREVO_FROM_NAME || 'StudyPulse';
 
     const recipientEmails = Array.isArray(to) ? to : [to];
     

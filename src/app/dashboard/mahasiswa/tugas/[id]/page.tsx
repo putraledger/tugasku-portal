@@ -3,9 +3,9 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   ArrowLeft, 
-  GraduationCap, 
   Calendar, 
   Clock, 
   FileText, 
@@ -14,10 +14,9 @@ import {
   CheckCircle2, 
   Download, 
   Award,
-  ExternalLink,
-  RefreshCw,
-  HelpCircle
+  RefreshCw
 } from 'lucide-react';
+import { AnimatedCard } from '@/components/ui/AnimatedCard';
 
 interface TaskData {
   id: string;
@@ -60,7 +59,7 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   
   // Countdown State
-  const [countdown, setCountdown] = useState({ text: 'Mengitung...', isExpired: false });
+  const [countdown, setCountdown] = useState({ text: 'Menghitung...', isExpired: false });
 
   // Status Alerts
   const [error, setError] = useState<string | null>(null);
@@ -156,7 +155,6 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
   };
 
   const handleFileSelection = (file: File) => {
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       setError('Ukuran berkas melebihi batasan maksimum (10 MB).');
       return;
@@ -176,7 +174,7 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
       setSuccess(null);
       setUploadProgress(20);
 
-      // 1. Upload to Supabase/Local API
+      // 1. Upload to Local API/Supabase
       const formData = new FormData();
       formData.append('file', selectedFile);
 
@@ -225,7 +223,6 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
     }
   };
 
-  // Convert bytes helper
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -236,193 +233,164 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-16">
-      {/* Top Navbar */}
-      <nav className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="bg-gradient-to-tr from-emerald-500 to-teal-600 p-2 rounded-xl text-white shadow-lg shadow-emerald-500/20">
-            <GraduationCap className="w-5 h-5" />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold tracking-tight text-white">TugasKu Portal</h1>
-            <p className="text-[10px] text-emerald-400 font-medium">Detail & Kumpul Tugas</p>
-          </div>
-        </div>
-
-        <Link
-          href="/dashboard/mahasiswa"
-          className="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors text-xs font-semibold"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Kembali ke Board</span>
-        </Link>
-      </nav>
-
-      {/* Content Container */}
-      <main className="max-w-6xl mx-auto px-6 mt-8 space-y-8">
+    <div className="min-h-screen bg-slate-950 font-sans py-0 flex flex-col justify-start">
+      
+      {/* Mobile Shell Frame */}
+      <div className="w-full max-w-md mx-auto min-h-screen bg-slate-900 border-x border-slate-800/80 shadow-2xl relative flex flex-col pb-16">
         
-        {loading ? (
-          <div className="py-24 text-center text-slate-500 text-sm">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-3 text-emerald-500" />
-            Memuat lembar penugasan...
+        {/* Mobile Header Banner */}
+        <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 px-4 py-4 flex items-center justify-between shadow-sm">
+          <div className="flex items-center space-x-2">
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden shadow border border-indigo-500/20 bg-slate-950 flex items-center justify-center">
+              <Image 
+                src="/logo.png" 
+                alt="StudyPulse Logo" 
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div>
+              <h1 className="text-sm font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent">
+                StudyPulse
+              </h1>
+              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Tugas Detail</p>
+            </div>
           </div>
-        ) : !task ? (
-          <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-8 text-center text-slate-500 text-sm">
-            Tugas tidak ditemukan.
+
+          <div className="flex items-center space-x-2">
+            <Link
+              href="/dashboard/mahasiswa"
+              className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-indigo-500 transition-colors border border-slate-700/40"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+            </Link>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            
-            {/* Column 1 & 2: Task Detail & Evaluation Card */}
-            <div className="lg:col-span-2 space-y-6">
+        </header>
+
+        {/* Content Body */}
+        <main className="flex-1 p-4 overflow-y-auto space-y-5">
+          
+          {loading ? (
+            <div className="py-24 text-center text-slate-400 text-xs">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-3 text-indigo-500" />
+              Memuat lembar penugasan...
+            </div>
+          ) : !task ? (
+            <div className="bg-white dark:bg-slate-900/30 border border-slate-200/60 dark:border-slate-800/60 rounded-2xl py-20 text-center text-slate-400 text-xs">
+              Tugas tidak ditemukan.
+            </div>
+          ) : (
+            <div className="space-y-4">
               
-              {/* Task Detail Card */}
-              <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-6 relative overflow-hidden shadow-xl">
-                <div className="absolute right-0 bottom-0 top-0 w-96 bg-gradient-to-l from-emerald-500/5 to-transparent blur-3xl rounded-full -mr-20 pointer-events-none" />
-                
-                <div className="relative z-10 space-y-4">
-                  {/* Subject Badges */}
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-[10px] bg-slate-850 text-slate-400 font-bold px-2 py-0.5 rounded">
+              {/* Task Header & Instructions */}
+              <AnimatedCard className="p-5 space-y-4 relative overflow-hidden">
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[9px] bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-500 font-extrabold px-1.5 py-0.5 rounded">
                       {task.course.code}
                     </span>
-                    <span className="text-[10px] bg-slate-850 text-slate-300 font-bold px-2 py-0.5 rounded">
-                      {task.course.name}
-                    </span>
-                    <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold px-2.5 py-0.5 rounded-full">
-                      Semester {task.course.semester}
+                    <span className="text-[9px] bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 font-bold px-2.5 py-0.5 rounded-full">
+                      Smt {task.course.semester}
                     </span>
                   </div>
-
-                  <h2 className="text-xl md:text-2xl font-extrabold text-white">{task.title}</h2>
                   
-                  {/* Lecturer Info */}
-                  <div className="text-xs text-slate-400 flex items-center space-x-2">
-                    <span className="font-semibold text-slate-300">Dosen Pengampu:</span>
-                    <span>{task.course.lecturer.name}</span>
+                  <h3 className="font-extrabold text-base text-slate-900 dark:text-white leading-snug">
+                    {task.title}
+                  </h3>
+                  
+                  <p className="text-[10px] text-slate-500">Mata Kuliah: {task.course.name}</p>
+                  <p className="text-[10px] text-slate-400">Dosen Pengampu: {task.course.lecturer.name}</p>
+                </div>
+
+                {/* Deadlines Widget */}
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="flex items-center space-x-1.5 text-[10px] text-slate-500 dark:text-slate-400">
+                    <Calendar className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                    <span className="font-medium text-slate-700 dark:text-slate-350">Batas: {new Date(task.deadline).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })} WIB</span>
                   </div>
 
-                  {/* Deadline Section */}
-                  <div className="border-t border-b border-slate-800/80 py-4 my-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Batas Waktu Pengumpulan</p>
-                      <p className="text-xs font-semibold text-slate-300">
-                        {new Date(task.deadline).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Sisa Waktu Pengerjaan</p>
-                      <span className={`text-xs font-bold inline-flex items-center space-x-1 ${
-                        countdown.isExpired ? 'text-red-400' : 'text-emerald-400'
-                      }`}>
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>{countdown.text}</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Description Box */}
-                  <div className="space-y-2">
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Instruksi Tugas:</p>
-                    <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-line">
-                      {task.description}
-                    </p>
+                  <div className={`flex items-center space-x-1.5 text-[10px] font-bold ${
+                    countdown.isExpired ? 'text-red-500' : 'text-emerald-500'
+                  }`}>
+                    <Clock className="w-3.5 h-3.5 shrink-0" />
+                    <span>{countdown.text}</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Evaluation Card from Dosen if Graded */}
+                {/* Description */}
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-1">
+                  <p className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wide">Instruksi:</p>
+                  <p className="text-[11px] text-slate-650 dark:text-slate-300 leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-100 dark:border-slate-900">
+                    {task.description}
+                  </p>
+                </div>
+              </AnimatedCard>
+
+              {/* Evaluation Card from Lecturer */}
               {submission && submission.grade !== null && (
-                <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-500/20 rounded-3xl p-6 md:p-8 space-y-6 relative overflow-hidden shadow-2xl">
-                  <div className="absolute right-0 bottom-0 top-0 w-80 bg-gradient-to-l from-emerald-500/10 to-transparent blur-3xl rounded-full pointer-events-none" />
-                  
-                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <Award className="w-5 h-5 text-emerald-400 animate-bounce" />
-                        <h3 className="text-base font-extrabold text-white">Lembar Nilai & Ulasan Dosen</h3>
-                      </div>
-                      
-                      {submission.feedback ? (
-                        <div className="p-4 bg-slate-950/80 border border-slate-800/80 rounded-xl leading-relaxed">
-                          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Feedback Dosen:</p>
-                          <p className="text-xs text-slate-200 italic">
-                            "{submission.feedback}"
-                          </p>
-                        </div>
-                      ) : (
-                        <p className="text-slate-400 text-xs italic">Tidak ada catatan tambahan dari dosen.</p>
-                      )}
+                <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-teal-500/5 border border-emerald-500/20 space-y-3 shadow-md">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-1.5 text-slate-850 dark:text-white">
+                      <Award className="w-4 h-4 text-emerald-500" />
+                      <h4 className="font-extrabold text-xs">Ulasan & Nilai Dosen</h4>
                     </div>
-
-                    <div className="shrink-0 bg-slate-950/90 border border-slate-800 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg w-full md:w-36">
-                      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-1">Nilai Angka</span>
-                      <div className="flex items-baseline space-x-1">
-                        <span className="text-4xl font-black bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">{submission.grade}</span>
-                        <span className="text-[11px] text-slate-500 font-bold">/100</span>
-                      </div>
-                      <span className="text-[9px] text-emerald-400 font-bold uppercase tracking-wider mt-2.5 bg-emerald-500/10 px-2 py-0.5 rounded">
-                        Lulus
-                      </span>
-                    </div>
+                    <span className="bg-emerald-500 text-white font-black text-xs px-2 py-0.5 rounded shadow">
+                      Grade: {submission.grade}
+                    </span>
                   </div>
+
+                  {submission.feedback ? (
+                    <div className="p-3 bg-white/90 dark:bg-slate-950/80 border border-slate-200/60 dark:border-slate-850 rounded-xl leading-relaxed text-[11px] text-slate-600 dark:text-slate-350 italic">
+                      "{submission.feedback}"
+                    </div>
+                  ) : (
+                    <p className="text-[10px] text-slate-400 italic">Tidak ada catatan ulasan tambahan.</p>
+                  )}
                 </div>
               )}
 
-            </div>
-
-            {/* Column 3: Submission & Upload Panel */}
-            <div className="lg:col-span-1 space-y-6">
-              
-              {/* Submission Status Box */}
-              <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-                <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">Status Pengumpulan</h3>
-                  <p className="text-[11px] text-slate-500 mt-0.5">Kelola berkas pengumpulan Anda.</p>
-                </div>
-
+              {/* Submission Panel */}
+              <AnimatedCard className="p-5 space-y-4">
+                <h4 className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">Status Pengumpulan</h4>
+                
                 {submission && submission.fileUrl ? (
                   <div className="space-y-4">
-                    {/* File Info */}
-                    <div className="bg-slate-950 border border-slate-850 p-4 rounded-2xl space-y-3">
+                    
+                    {/* File Box */}
+                    <div className="bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-850 p-3.5 rounded-2xl space-y-3">
                       <div className="flex items-start space-x-2.5">
-                        <FileText className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                        <FileText className="w-4.5 h-4.5 text-emerald-500 shrink-0 mt-0.5" />
                         <div className="space-y-0.5 truncate">
-                          <p className="text-xs font-semibold text-white truncate" title={submission.fileUrl.split('/').pop()}>
+                          <p className="text-xs font-bold text-slate-800 dark:text-white truncate">
                             {submission.fileUrl.split('/').pop()}
                           </p>
-                          <p className="text-[10px] text-slate-500">
-                            Dikumpul: {submission.submittedAt ? new Date(submission.submittedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-'} WIB
+                          <p className="text-[9px] text-slate-400">
+                            Terverifikasi Sistem
                           </p>
                         </div>
                       </div>
 
-                      {/* Download Link */}
                       <a
                         href={submission.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center space-x-1 text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 py-2 rounded-xl border border-emerald-500/20 transition-all select-none"
+                        className="w-full flex items-center justify-center space-x-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 py-2 rounded-xl border border-emerald-500/20 transition-all select-none"
                       >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Unduh Berkas</span>
+                        <span>Unduh Dokumen</span>
                       </a>
                     </div>
 
-                    {/* Status Badge */}
-                    <div className="flex items-center space-x-2 bg-slate-950 p-3.5 rounded-xl border border-slate-850 text-xs">
-                      <CheckCircle2 className="w-4.5 h-4.5 text-emerald-400" />
-                      <span className="font-semibold text-slate-300">Tugas Berhasil Dikumpul</span>
+                    <div className="flex items-center space-x-2 bg-emerald-500/5 border border-emerald-500/10 p-3 rounded-xl text-[10px] text-emerald-600 dark:text-emerald-400 font-bold justify-center">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Berkas Berhasil Terkumpul</span>
                     </div>
 
-                    {/* If NOT graded yet, allowed to overwrite/update */}
+                    {/* Resubmit form if not graded */}
                     {submission.grade === null && !countdown.isExpired ? (
-                      <div className="space-y-2 pt-2 border-t border-slate-800/80">
-                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Perbarui Pengumpulan Berkas:</p>
+                      <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wide">Perbarui Berkas:</p>
                         <form onSubmit={handleUploadAndSubmit} className="space-y-3">
-                          {/* File input */}
-                          <div className="bg-slate-950 border border-slate-850 p-2.5 rounded-xl flex items-center justify-between text-xs gap-3">
+                          <div className="bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-850 p-2.5 rounded-xl flex items-center justify-between text-xs gap-3">
                             <input
                               type="file"
                               onChange={handleFileChange}
@@ -432,12 +400,12 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
                             />
                             <label
                               htmlFor="update-file-input"
-                              className="cursor-pointer font-bold text-[10px] text-slate-400 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded transition-all select-none whitespace-nowrap"
+                              className="cursor-pointer font-bold text-[9px] text-slate-450 dark:text-slate-400 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 px-3 py-1.5 rounded transition-all select-none whitespace-nowrap"
                             >
-                              Pilih File
+                              Ganti File
                             </label>
-                            <span className="text-[10px] text-slate-500 truncate">
-                              {selectedFile ? selectedFile.name : 'Belum pilih file baru...'}
+                            <span className="text-[9.5px] text-slate-450 truncate">
+                              {selectedFile ? selectedFile.name : 'Pilih dokumen baru...'}
                             </span>
                           </div>
 
@@ -445,102 +413,79 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
                             <button
                               type="submit"
                               disabled={uploading}
-                              className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-xl text-xs transition-colors shadow shadow-indigo-500/10 cursor-pointer"
+                              className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-650 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer"
                             >
-                              {uploading ? 'Mengunggah...' : 'Unggah & Ganti Berkas'}
+                              {uploading ? 'Mengunggah...' : 'Unggah & Ganti File'}
                             </button>
                           )}
                         </form>
                       </div>
-                    ) : (
-                      submission.grade !== null ? (
-                        <div className="text-[10px] text-slate-500 italic text-center pt-2">
-                          Pengumpulan ditutup karena lembar tugas telah dinilai.
-                        </div>
-                      ) : (
-                        <div className="text-[10px] text-slate-500 italic text-center pt-2">
-                          Batas waktu pengumpulan telah berakhir.
-                        </div>
-                      )
-                    )}
+                    ) : null}
 
                   </div>
                 ) : (
-                  // Upload Form
-                  <div className="space-y-4">
+                  // File upload form
+                  <div className="space-y-3">
                     {countdown.isExpired ? (
-                      <div className="p-4 bg-red-950/20 border border-red-900/40 text-red-400 rounded-xl text-xs flex items-center space-x-2">
-                        <AlertCircle className="w-4.5 h-4.5" />
-                        <span>Batas waktu terlewati. Pengumpulan berkas dikunci.</span>
+                      <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-[10px] flex items-center space-x-1.5 justify-center leading-relaxed">
+                        <AlertCircle className="w-4.5 h-4.5 shrink-0" />
+                        <span>Batas waktu pengumpulan habis. Pengumpulan ditutup.</span>
                       </div>
                     ) : (
                       <form onSubmit={handleUploadAndSubmit} className="space-y-4">
-                        
-                        {/* Status Alerts */}
                         {error && (
-                          <div className="p-3 bg-red-950/20 border border-red-900/40 text-red-400 rounded-xl text-[11px] flex items-center space-x-2">
+                          <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-[10px] flex items-center space-x-1.5">
                             <AlertCircle className="w-4 h-4 shrink-0" />
                             <span>{error}</span>
                           </div>
                         )}
 
                         {success && (
-                          <div className="p-3 bg-emerald-950/20 border border-emerald-900/40 text-emerald-400 rounded-xl text-[11px] flex items-center space-x-2">
+                          <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-xl text-[10px] flex items-center space-x-1.5">
                             <CheckCircle2 className="w-4 h-4 shrink-0" />
                             <span>{success}</span>
                           </div>
                         )}
 
-                        {/* Drag and Drop Zone */}
+                        {/* File drop box */}
                         <div
                           onDragEnter={handleDrag}
                           onDragOver={handleDrag}
                           onDragLeave={handleDrag}
                           onDrop={handleDrop}
-                          className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all duration-300 relative ${
+                          className={`border border-dashed rounded-2xl p-6 text-center transition-all bg-slate-50 dark:bg-slate-950/40 relative ${
                             dragActive
-                              ? 'border-emerald-500 bg-emerald-500/5 shadow-inner'
-                              : 'border-slate-800 hover:border-slate-700/60'
+                              ? 'border-indigo-500 bg-indigo-500/5'
+                              : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
                           }`}
                         >
                           <input
                             type="file"
                             onChange={handleFileChange}
                             className="hidden"
-                            id="file-input-upload"
+                            id="file-input-detail"
                             accept=".pdf,.zip,.rar,.doc,.docx"
                           />
-                          <label
-                            htmlFor="file-input-upload"
-                            className="cursor-pointer space-y-3 block"
-                          >
-                            <UploadCloud className="w-10 h-10 text-slate-500 mx-auto group-hover:text-emerald-400 transition-colors" />
-                            
-                            <div className="space-y-1">
-                              <p className="text-xs font-bold text-white">
-                                {selectedFile ? selectedFile.name : 'Tarik Berkas ke Sini'}
+                          <label htmlFor="file-input-detail" className="cursor-pointer space-y-2 block">
+                            <UploadCloud className="w-9 h-9 text-slate-400 dark:text-slate-500 mx-auto" />
+                            <div className="space-y-0.5">
+                              <p className="text-xs font-bold text-slate-750 dark:text-white truncate">
+                                {selectedFile ? selectedFile.name : 'Pilih Berkas Tugas'}
                               </p>
-                              <p className="text-[10px] text-slate-500">
-                                {selectedFile ? formatBytes(selectedFile.size) : 'PDF, ZIP (Maks. 10MB)'}
+                              <p className="text-[9px] text-slate-400">
+                                {selectedFile ? formatBytes(selectedFile.size) : 'PDF, ZIP, DOC (Maks. 10MB)'}
                               </p>
                             </div>
-
-                            {!selectedFile && (
-                              <span className="inline-block bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[10px] px-3.5 py-1.5 rounded-lg border border-slate-700 select-none transition-colors">
-                                Pilih File Dokumen
-                              </span>
-                            )}
                           </label>
                         </div>
 
-                        {/* Uploading progress bar */}
                         {uploading && (
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between text-[10px] font-bold text-indigo-400">
-                              <span>Mengunggah dokumen tugas...</span>
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-[9px] font-bold text-indigo-500">
+                              <span>Mengirim berkas tugas...</span>
                               <span>{uploadProgress}%</span>
                             </div>
-                            <div className="w-full bg-slate-950 border border-slate-850 h-2 rounded-full overflow-hidden">
+                            <div className="w-full bg-slate-100 dark:bg-slate-950 h-1.5 rounded-full overflow-hidden">
                               <div 
                                 className="bg-indigo-500 h-full transition-all duration-300"
                                 style={{ width: `${uploadProgress}%` }}
@@ -553,9 +498,9 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
                           <button
                             type="submit"
                             disabled={uploading}
-                            className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/10 disabled:opacity-50 select-none cursor-pointer"
+                            className="w-full py-3 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-650 hover:to-violet-750 text-white font-bold rounded-xl text-xs transition-all shadow shadow-indigo-500/10 cursor-pointer"
                           >
-                            {uploading ? 'Menyelesaikan...' : 'Kumpulkan Tugas Sekarang'}
+                            {uploading ? 'Memproses...' : 'Kumpulkan Tugas Sekarang'}
                           </button>
                         )}
 
@@ -563,14 +508,13 @@ export default function StudentTaskDetailPage({ params }: { params: Promise<{ id
                     )}
                   </div>
                 )}
-              </div>
+              </AnimatedCard>
 
             </div>
+          )}
 
-          </div>
-        )}
-
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

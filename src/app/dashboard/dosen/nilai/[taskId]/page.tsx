@@ -3,21 +3,20 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   ArrowLeft, 
-  BookOpen, 
   Calendar, 
   FileText, 
-  ExternalLink, 
   Download, 
-  Check, 
   Save, 
   Edit, 
   Filter, 
   AlertCircle,
-  HelpCircle,
-  GraduationCap
+  Award
 } from 'lucide-react';
+import { AnimatedCard } from '@/components/ui/AnimatedCard';
+import { AnimatedButton } from '@/components/ui/AnimatedButton';
 
 interface StudentData {
   id: string;
@@ -54,16 +53,13 @@ interface TaskData {
 
 export default function LecturerGradingPage({ params }: { params: Promise<{ taskId: string }> }) {
   const router = useRouter();
-  
-  // Unwrap params using React.use()
   const { taskId } = use(params);
 
   const [task, setTask] = useState<TaskData | null>(null);
   const [submissions, setSubmissions] = useState<SubmissionData[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Filter state
-  // "all" | "active" (student is active in course semester) | "archived" (student's enrollment is archived)
+  // Filter state: "all" | "active" | "archived"
   const [semesterFilter, setSemesterFilter] = useState<'all' | 'active' | 'archived'>('all');
 
   // Grading states
@@ -134,7 +130,6 @@ export default function LecturerGradingPage({ params }: { params: Promise<{ task
     }
   };
 
-  // Helper to determine status
   const getEnrollmentStatus = (sub: SubmissionData) => {
     return sub.student.enrollments[0]?.status || 'AKTIF';
   };
@@ -153,76 +148,81 @@ export default function LecturerGradingPage({ params }: { params: Promise<{ task
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-16">
+    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans pb-16">
+      
       {/* Top Navbar */}
-      <nav className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+      <nav className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-tr from-amber-500 to-orange-600 p-2 rounded-xl text-white shadow-lg shadow-amber-500/20">
-              <BookOpen className="w-5 h-5" />
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden shadow border border-indigo-500/20 bg-slate-950 flex items-center justify-center">
+              <Image src="/logo.png" alt="StudyPulse Logo" fill className="object-cover" />
             </div>
             <div>
-              <h1 className="text-sm font-bold tracking-tight text-white">TugasKu Portal</h1>
-              <p className="text-[10px] text-amber-400 font-medium">Dashboard Dosen</p>
+              <h1 className="text-sm font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-650 bg-clip-text text-transparent">
+                StudyPulse
+              </h1>
+              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Lecturer Console</p>
             </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-2 pl-4 border-l border-slate-800">
             <Link 
               href="/dashboard/dosen" 
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-colors hover:bg-slate-800/40"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-indigo-400 transition-colors"
             >
               Dashboard
             </Link>
             <Link 
               href="/dashboard/dosen/courses" 
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-colors hover:bg-slate-800/40"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-indigo-400 transition-colors"
             >
               Mata Kuliah
             </Link>
           </div>
         </div>
 
-        <Link
-          href="/dashboard/dosen"
-          className="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors text-xs font-semibold"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Kembali</span>
-        </Link>
+        <div className="flex items-center space-x-3">
+          <Link
+            href="/dashboard/dosen"
+            className="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors text-xs font-bold"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Kembali ke Dasbor</span>
+          </Link>
+        </div>
       </nav>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-6 mt-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-6 mt-8 space-y-8 animate-fadeIn">
         
         {/* Task Detail Summary */}
         {task && (
-          <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-xl">
-            <div className="absolute right-0 bottom-0 top-0 w-96 bg-gradient-to-l from-amber-500/5 to-transparent blur-3xl rounded-full -mr-20 pointer-events-none" />
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden shadow-sm">
+            <div className="absolute right-0 bottom-0 top-0 w-96 bg-gradient-to-l from-indigo-500/5 to-transparent blur-3xl rounded-full -mr-20 pointer-events-none" />
             <div className="relative z-10 space-y-4">
               <div className="flex flex-wrap items-center gap-2.5">
-                <span className="text-[10px] bg-slate-800 text-slate-400 font-bold px-2 py-0.5 rounded">
+                <span className="text-[9px] bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-500 font-extrabold px-2 py-0.5 rounded">
                   {task.course.code}
                 </span>
-                <span className="text-[10px] bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded">
+                <span className="text-[9px] bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-500 font-bold px-2 py-0.5 rounded">
                   {task.course.name}
                 </span>
-                <span className="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold px-2.5 py-0.5 rounded-full">
+                <span className="text-[9px] bg-indigo-500/10 text-indigo-550 dark:text-indigo-455 border border-indigo-500/20 font-bold px-2.5 py-0.5 rounded-full">
                   Semester {task.course.semester}
                 </span>
               </div>
               
               <div className="space-y-1">
-                <h2 className="text-xl md:text-2xl font-extrabold text-white">{task.title}</h2>
-                <div className="flex items-center space-x-2 text-xs text-slate-500 pt-1">
-                  <Calendar className="w-3.5 h-3.5 text-amber-500/80" />
+                <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white leading-snug">{task.title}</h2>
+                <div className="flex items-center space-x-2 text-xs text-slate-500 pt-1 font-medium">
+                  <Calendar className="w-4 h-4 text-indigo-500" />
                   <span>Batas Akhir: {new Date(task.deadline).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })} WIB</span>
                 </div>
               </div>
 
-              <div className="border-t border-slate-800/80 pt-4 mt-2">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Instruksi Tugas:</h3>
-                <p className="text-slate-400 text-xs leading-relaxed max-w-4xl whitespace-pre-line">
+              <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 mt-2">
+                <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Instruksi Tugas:</h3>
+                <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed max-w-4xl whitespace-pre-line bg-slate-50 dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-900">
                   {task.description}
                 </p>
               </div>
@@ -236,131 +236,133 @@ export default function LecturerGradingPage({ params }: { params: Promise<{ task
           {/* Filters and Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-base font-bold text-white">Daftar Pengumpulan Mahasiswa</h3>
+              <h3 className="text-sm font-extrabold uppercase tracking-wider text-slate-400">Daftar Pengumpulan Mahasiswa</h3>
               <p className="text-xs text-slate-500">Nilai lembar kerja dan berikan koreksi balik akademik.</p>
             </div>
 
             {/* Semester Filter Tab */}
-            <div className="flex items-center space-x-2 bg-slate-900 border border-slate-800/80 p-1 rounded-xl self-start sm:self-auto">
+            <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-905 border border-slate-200 dark:border-slate-800 p-1.5 rounded-xl self-start sm:self-auto shadow-sm">
               <button
                 onClick={() => setSemesterFilter('all')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all select-none cursor-pointer ${
                   semesterFilter === 'all' 
-                    ? 'bg-amber-500 text-slate-950 font-bold' 
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-indigo-500 text-white font-extrabold shadow' 
+                    : 'text-slate-500 hover:text-slate-850 dark:hover:text-white'
                 }`}
               >
                 Semua ({submissions.length})
               </button>
               <button
                 onClick={() => setSemesterFilter('active')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all select-none cursor-pointer ${
                   semesterFilter === 'active' 
-                    ? 'bg-amber-500 text-slate-950 font-bold' 
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-indigo-500 text-white font-extrabold shadow' 
+                    : 'text-slate-500 hover:text-slate-850 dark:hover:text-white'
                 }`}
               >
                 Aktif ({submissions.filter(s => getEnrollmentStatus(s) === 'AKTIF').length})
               </button>
               <button
                 onClick={() => setSemesterFilter('archived')}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all select-none cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-all select-none cursor-pointer ${
                   semesterFilter === 'archived' 
-                    ? 'bg-amber-500 text-slate-950 font-bold' 
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-indigo-500 text-white font-extrabold shadow' 
+                    : 'text-slate-500 hover:text-slate-850 dark:hover:text-white'
                 }`}
               >
-                Alumni / Archived ({submissions.filter(s => getEnrollmentStatus(s) === 'ARCHIVED').length})
+                Archived ({submissions.filter(s => getEnrollmentStatus(s) === 'ARCHIVED').length})
               </button>
             </div>
           </div>
 
           {/* Table / List Workspace */}
           {loading ? (
-            <div className="bg-slate-900/40 border border-slate-800 rounded-3xl py-24 text-center text-slate-500 text-sm">
+            <div className="bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-3xl py-24 text-center text-slate-400 text-sm animate-pulse">
               Memuat lembar pengumpulan...
             </div>
           ) : filteredSubmissions.length === 0 ? (
-            <div className="bg-slate-900/20 border border-slate-800 rounded-3xl py-20 text-center text-slate-500 text-xs">
-              <AlertCircle className="w-8 h-8 text-slate-600 mx-auto mb-3" />
+            <div className="bg-white dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 rounded-3xl py-20 text-center text-slate-500 text-xs shadow-sm">
+              <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-3" />
               Tidak ada data pengumpulan tugas untuk filter ini.
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredSubmissions.map((sub) => {
+              {filteredSubmissions.map((sub, idx) => {
                 const isEditing = editingSubmissionId === sub.id;
                 const isSubmitting = submittingGradeId === sub.id;
                 const statusEnroll = getEnrollmentStatus(sub);
 
                 return (
-                  <div 
+                  <AnimatedCard 
                     key={sub.id} 
-                    className={`bg-slate-900/40 border rounded-2xl p-5 md:p-6 transition-all duration-300 ${
+                    delay={idx * 100}
+                    className={`border rounded-2xl p-5 md:p-6 transition-all duration-300 ${
                       isEditing 
-                        ? 'border-amber-500/50 bg-indigo-950/5 shadow-lg' 
+                        ? 'border-indigo-500 bg-indigo-500/5 shadow-md scale-[1.01]' 
                         : sub.grade !== null
-                        ? 'border-slate-800/80 hover:border-slate-700/60'
-                        : 'border-red-500/20 bg-red-950/5 hover:border-red-500/30'
+                        ? 'border-slate-200 dark:border-slate-800/80 hover:border-slate-350 dark:hover:border-slate-700'
+                        : 'border-red-500/20 bg-red-500/5 hover:border-red-500/30'
                     }`}
                   >
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                      
                       {/* Left Block: Student Info & Attached File */}
-                      <div className="space-y-4 max-w-xl">
+                      <div className="space-y-4 max-w-xl flex-grow">
                         <div className="flex items-start space-x-3">
-                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-amber-400 text-xs uppercase border border-slate-700">
+                          <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center font-bold text-indigo-500 text-sm uppercase shadow-sm shrink-0">
                             {sub.student.name.charAt(0)}
                           </div>
                           <div>
-                            <h4 className="font-bold text-sm text-white">{sub.student.name}</h4>
-                            <p className="text-slate-400 text-[11px]">{sub.student.email}</p>
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-white">{sub.student.name}</h4>
+                            <p className="text-slate-450 dark:text-slate-400 text-[11px] font-medium">{sub.student.email}</p>
                             
                             {/* Academic Status Pills */}
-                            <div className="flex items-center space-x-2 mt-2">
-                              <span className="text-[9px] bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded">
+                            <div className="flex flex-wrap items-center gap-2 mt-2">
+                              <span className="text-[9px] bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-500 dark:text-slate-400 font-extrabold px-2 py-0.5 rounded">
                                 Smt {sub.student.semester || 'Lulus'}
                               </span>
                               <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
                                 statusEnroll === 'AKTIF' 
-                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
-                                  : 'bg-slate-800 text-slate-500 border border-slate-700'
+                                  ? 'bg-emerald-550/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
+                                  : 'bg-slate-200 dark:bg-slate-850 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700'
                               }`}>
-                                {statusEnroll === 'AKTIF' ? 'Kelas Aktif' : 'Kelas Archived (Alumni)'}
+                                {statusEnroll === 'AKTIF' ? 'Kelas Aktif' : 'Archived'}
                               </span>
                             </div>
                           </div>
                         </div>
 
                         {/* File Attachment & Time info */}
-                        <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div className="flex items-center space-x-2 text-xs">
-                            <FileText className="w-4 h-4 text-indigo-400 shrink-0" />
-                            <span className="font-medium text-slate-300 truncate max-w-xs" title={sub.fileUrl}>
+                        <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="flex items-center space-x-2 text-xs truncate max-w-sm">
+                            <FileText className="w-4 h-4 text-indigo-500 shrink-0" />
+                            <span className="font-bold text-slate-700 dark:text-slate-300 truncate" title={sub.fileUrl}>
                               {sub.fileUrl.split('/').pop()}
                             </span>
                           </div>
-                          <div className="flex items-center space-x-3">
-                            <span className="text-[10px] text-slate-500">
-                              Unggah: {new Date(sub.submittedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })} WIB
+                          <div className="flex items-center space-x-3 shrink-0">
+                            <span className="text-[10px] text-slate-450 dark:text-slate-550 font-bold">
+                              Dikumpul: {new Date(sub.submittedAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
                             </span>
                             <a
                               href={sub.fileUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center space-x-1 text-xs font-bold text-amber-400 hover:text-amber-300 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-1.5 rounded-lg border border-amber-500/20 transition-all select-none"
+                              className="flex items-center space-x-1 text-xs font-bold text-indigo-500 dark:text-indigo-400 bg-indigo-500/10 hover:bg-indigo-500/20 px-3.5 py-1.5 rounded-xl border border-indigo-500/20 transition-all select-none"
                             >
                               <Download className="w-3.5 h-3.5" />
-                              <span>Unduh File</span>
+                              <span>Unduh</span>
                             </a>
                           </div>
                         </div>
                       </div>
 
                       {/* Right Block: Grading Interface */}
-                      <div className="w-full md:w-80 shrink-0 bg-slate-950/50 border border-slate-800/80 rounded-xl p-4 space-y-4">
+                      <div className="w-full md:w-80 shrink-0 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-4 space-y-4 shadow-inner">
                         {isEditing ? (
-                          <div className="space-y-3">
+                          <div className="space-y-3 animate-slideUp">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Input Nilai (0-100)</span>
+                              <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 uppercase tracking-wider">Input Nilai (0-100)</span>
                             </div>
                             <input
                               type="number"
@@ -369,24 +371,24 @@ export default function LecturerGradingPage({ params }: { params: Promise<{ task
                               placeholder="Nilai (0-100)"
                               value={tempGrade}
                               onChange={(e) => setTempGrade(e.target.value !== '' ? parseInt(e.target.value) : '')}
-                              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-amber-500"
+                              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-850 dark:text-white focus:outline-none focus:border-indigo-500"
                             />
                             
                             <div className="space-y-1">
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Catatan Feedback Dosen</span>
+                              <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 uppercase tracking-wider">Feedback Koreksi Balik</span>
                               <textarea
                                 rows={3}
-                                placeholder="Beri catatan koreksi balik untuk perbaikan mahasiswa..."
+                                placeholder="Beri catatan perbaikan dan koreksi balik akademik untuk mahasiswa..."
                                 value={tempFeedback}
                                 onChange={(e) => setTempFeedback(e.target.value)}
-                                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-300 focus:outline-none focus:border-amber-500 resize-none leading-relaxed"
+                                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500 resize-none leading-relaxed"
                               />
                             </div>
 
                             <button
                               onClick={() => handleSaveGrade(sub.id)}
                               disabled={isSubmitting}
-                              className="w-full flex items-center justify-center space-x-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow shadow-amber-500/10 cursor-pointer"
+                              className="w-full flex items-center justify-center space-x-1.5 bg-gradient-to-r from-indigo-500 to-violet-650 hover:from-indigo-600 hover:to-violet-750 text-white font-bold py-2.5 rounded-xl text-xs transition-colors shadow shadow-indigo-500/10 cursor-pointer"
                             >
                               <Save className="w-3.5 h-3.5" />
                               <span>{isSubmitting ? 'Menyimpan...' : 'Simpan Penilaian'}</span>
@@ -395,41 +397,38 @@ export default function LecturerGradingPage({ params }: { params: Promise<{ task
                         ) : (
                           <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status Nilai</span>
+                              <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 uppercase tracking-wider">Evaluasi Nilai</span>
                               <button
                                 onClick={() => startGrading(sub)}
-                                className="flex items-center space-x-1 text-[10px] text-amber-400 hover:text-amber-300 transition-colors font-bold uppercase"
+                                className="flex items-center space-x-1 text-[9px] text-indigo-500 dark:text-indigo-400 hover:underline transition-colors font-bold uppercase cursor-pointer"
                               >
-                                <Edit className="w-3 h-3" />
+                                <Edit className="w-3.5 h-3.5" />
                                 <span>{sub.grade !== null ? 'Koreksi' : 'Beri Nilai'}</span>
                               </button>
                             </div>
 
                             {sub.grade !== null ? (
                               <div className="space-y-2">
-                                <div className="flex items-baseline space-x-1.5">
-                                  <span className="text-3xl font-black text-white">{sub.grade}</span>
-                                  <span className="text-slate-500 text-xs font-semibold">/ 100</span>
+                                <div className="flex items-baseline space-x-1">
+                                  <span className="text-3xl font-black text-slate-850 dark:text-white">{sub.grade}</span>
+                                  <span className="text-slate-400 text-xs font-bold">/ 100</span>
                                 </div>
                                 {sub.feedback ? (
-                                  <div className="p-3 bg-slate-900 border border-slate-800 rounded-lg">
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Masukan Dosen:</p>
-                                    <p className="text-[11px] text-slate-300 italic leading-relaxed">
-                                      "{sub.feedback}"
-                                    </p>
+                                  <div className="p-3 bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-850 rounded-xl leading-relaxed text-[11px] text-slate-600 dark:text-slate-350 italic">
+                                    "{sub.feedback}"
                                   </div>
                                 ) : (
-                                  <span className="text-[10px] text-slate-600 italic block">Tidak ada feedback khusus.</span>
+                                  <span className="text-[10px] text-slate-400 italic block">Tidak ada catatan ulasan khusus.</span>
                                 )}
                               </div>
                             ) : (
-                              <div className="py-2 text-center text-red-400/90 font-bold text-xs space-y-1">
-                                <p className="text-[10px] uppercase tracking-wide">Belum Dinilai</p>
+                              <div className="py-2 text-center text-red-500 font-bold text-xs space-y-2">
+                                <p className="text-[9px] uppercase tracking-wide text-red-500/70">Belum Dinilai</p>
                                 <button
                                   onClick={() => startGrading(sub)}
-                                  className="mt-2 w-full py-2 bg-red-500/10 hover:bg-red-500 hover:text-slate-950 text-red-400 border border-red-500/20 hover:border-red-500 rounded-lg transition-all text-xs font-extrabold cursor-pointer"
+                                  className="w-full py-2 bg-red-500/10 hover:bg-red-500 hover:text-white text-red-550 border border-red-500/20 hover:border-red-500 rounded-xl transition-all text-xs font-extrabold cursor-pointer"
                                 >
-                                  Masukkan Nilai Sekarang
+                                  Masukkan Nilai
                                 </button>
                               </div>
                             )}
@@ -437,7 +436,7 @@ export default function LecturerGradingPage({ params }: { params: Promise<{ task
                         )}
                       </div>
                     </div>
-                  </div>
+                  </AnimatedCard>
                 );
               })}
             </div>

@@ -104,7 +104,7 @@ export async function POST(request: Request) {
 
         await sendEmail({
           to: email,
-          subject: '[TugasKu Portal] Verifikasi Alamat Email Anda',
+          subject: '[StudyPulse] Verifikasi Alamat Email Anda',
           html: getVerificationHtml({
             verificationUrl,
             name,

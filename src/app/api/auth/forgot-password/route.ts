@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     try {
       await sendEmail({
         to: email,
-        subject: '[TugasKu Portal] Permintaan Atur Ulang Kata Sandi',
+        subject: '[StudyPulse] Permintaan Atur Ulang Kata Sandi',
         html: getPasswordResetHtml({
           resetUrl,
           name: user.name,

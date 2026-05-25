@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, User, GraduationCap, Shield, AlertCircle, CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, Lock, Eye, EyeOff, User, GraduationCap, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess('Registrasi Berhasil! Mengalihkan ke Halaman Login...');
+        setSuccess('Aktivasi Berhasil! Mengalihkan ke Halaman Login...');
         setTimeout(() => {
           router.push('/login');
         }, 2000);
@@ -58,43 +59,48 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-4 overflow-hidden font-sans">
+    <div className="relative min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center p-4 overflow-hidden font-sans">
       {/* Background Decorative Gradients */}
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-violet-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Main Glassmorphic Container */}
-      <div className="relative w-full max-w-md z-10 my-8">
+      {/* Main Container */}
+      <div className="relative w-full max-w-md z-10 my-8 animate-slideUp">
         
         {/* Logo and Header */}
-        <div className="text-center mb-8 space-y-3">
-          <div className="inline-flex bg-gradient-to-tr from-indigo-500 to-violet-600 p-3.5 rounded-2xl text-white shadow-xl shadow-indigo-500/20 mb-2">
-            <Shield className="w-8 h-8" />
+        <div className="text-center mb-6 space-y-2">
+          <div className="inline-flex relative w-16 h-16 rounded-2xl overflow-hidden shadow-xl border border-indigo-500/20 bg-slate-950 flex items-center justify-center mb-2">
+            <Image 
+              src="/logo.png" 
+              alt="StudyPulse Logo" 
+              fill
+              className="object-cover"
+            />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-            TugasKu Portal
+          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-650 via-purple-650 to-violet-650 dark:from-white dark:via-slate-200 dark:to-slate-400 bg-clip-text text-transparent">
+            StudyPulse
           </h1>
-          <p className="text-sm text-slate-400 font-medium">
-            Gabung Sekarang & Kelola Tugas Akademik Anda
+          <p className="text-xs text-slate-500 dark:text-indigo-400 font-semibold uppercase tracking-wider">
+            Student Task Management
           </p>
         </div>
 
         {/* Card Form */}
-        <div className="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-8 shadow-2xl space-y-6">
+        <div className="bg-white dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-8 shadow-2xl space-y-6">
           <div className="space-y-1">
-            <h2 className="text-xl font-bold text-white">Buat Akun Baru</h2>
-            <p className="text-xs text-slate-400">Lengkapi formulir pendaftaran di bawah ini.</p>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Aktivasi Akun Baru</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Lengkapi data pendaftaran mahasiswa aktif di bawah ini.</p>
           </div>
 
           {error && (
-            <div className="flex items-start space-x-2 bg-red-950/20 border border-red-900/40 p-3.5 rounded-xl text-xs text-red-400">
+            <div className="flex items-start space-x-2 bg-red-500/10 border border-red-500/20 p-3.5 rounded-xl text-xs text-red-650 dark:text-red-400">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="flex items-start space-x-2 bg-emerald-950/20 border border-emerald-900/40 p-3.5 rounded-xl text-xs text-emerald-400">
+            <div className="flex items-start space-x-2 bg-emerald-500/10 border border-emerald-500/20 p-3.5 rounded-xl text-xs text-emerald-650 dark:text-emerald-450">
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{success}</span>
             </div>
@@ -103,9 +109,9 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Nama Lengkap */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama Lengkap</label>
+              <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nama Lengkap</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                   <User className="w-4 h-4" />
                 </span>
                 <input
@@ -114,34 +120,34 @@ export default function RegisterPage() {
                   placeholder="Masukkan nama lengkap..."
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none transition-all duration-300 shadow-inner"
+                  className="w-full bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:outline-none rounded-xl py-3 pl-11 pr-4 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 transition-all duration-300"
                 />
               </div>
             </div>
 
             {/* Email Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Alamat Email</label>
+              <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Alamat Email Kampus</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                   <Mail className="w-4 h-4" />
                 </span>
                 <input
                   type="email"
                   required
-                  placeholder="name@example.com"
+                  placeholder="name@mahasiswa.ac.id"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-200 placeholder-slate-600 focus:outline-none transition-all duration-300 shadow-inner"
+                  className="w-full bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:outline-none rounded-xl py-3 pl-11 pr-4 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 transition-all duration-300"
                 />
               </div>
             </div>
 
             {/* Password Field */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Kata Sandi</label>
+              <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Kata Sandi</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                   <Lock className="w-4 h-4" />
                 </span>
                 <input
@@ -150,12 +156,12 @@ export default function RegisterPage() {
                   placeholder="Buat kata sandi aman..."
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-12 text-sm text-slate-200 placeholder-slate-600 focus:outline-none transition-all duration-300 shadow-inner"
+                  className="w-full bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:outline-none rounded-xl py-3 pl-11 pr-12 text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-600 transition-all duration-300"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -163,23 +169,23 @@ export default function RegisterPage() {
             </div>
 
             {/* Semester Field - For Mahasiswa */}
-            <div className="space-y-1.5 animate-fadeIn">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Semester Berjalan</label>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Semester Berjalan</label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                   <GraduationCap className="w-4 h-4" />
                 </span>
                 <select
                   value={semester}
                   onChange={(e) => setSemester(e.target.value)}
-                  className="w-full bg-slate-950/80 border border-slate-800 focus:border-indigo-500/80 rounded-xl py-3 pl-11 pr-4 text-sm text-slate-200 focus:outline-none transition-all duration-300 shadow-inner appearance-none cursor-pointer"
+                  className="w-full bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 focus:border-indigo-500 focus:outline-none rounded-xl py-3 pl-11 pr-10 text-sm text-slate-850 dark:text-slate-200 transition-all duration-300 cursor-pointer appearance-none"
                 >
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((num) => (
                     <option key={num} value={num}>Semester {num}</option>
                   ))}
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-500">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400 dark:text-slate-500">
+                  <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                 </div>
               </div>
             </div>
@@ -190,17 +196,21 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full mt-4 flex items-center justify-center space-x-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white font-semibold py-3.5 px-4 rounded-xl text-sm transition-all duration-300 shadow-lg shadow-indigo-500/20 disabled:opacity-50 select-none cursor-pointer"
             >
-              <span>{loading ? 'Mendaftarkan Akun...' : 'Daftar Akun'}</span>
+              <span>{loading ? 'Mengaktifkan Akun...' : 'Aktivasi Akun'}</span>
             </button>
           </form>
         </div>
 
         {/* Footnote */}
-        <p className="text-center text-xs text-slate-500 mt-6">
+        <p className="text-center text-xs text-slate-500 dark:text-slate-400 mt-6">
           Sudah memiliki akun?{' '}
-          <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors underline underline-offset-4">
+          <Link href="/login" className="text-indigo-650 dark:text-indigo-400 hover:underline font-semibold transition-colors">
             Masuk Sekarang
           </Link>
+        </p>
+
+        <p className="text-center text-[10px] text-slate-400 dark:text-slate-500 mt-8">
+          © 2026 StudyPulse. Hak Cipta Dilindungi.
         </p>
 
       </div>

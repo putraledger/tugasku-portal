@@ -1,15 +1,15 @@
-// Utility templates for TugasKu email notifications in consistent Premium Dark Mode style
+// Utility templates for StudyPulse email notifications in consistent Premium Dark Mode style
 
 const baseHeader = `
   <div style="text-align: center; margin-bottom: 24px;">
-    <div style="font-size: 28px; font-weight: bold; color: #6366f1; font-family: 'Outfit', 'Inter', sans-serif; letter-spacing: 1px; margin: 0 0 8px 0;">TugasKu Portal</div>
+    <div style="font-size: 28px; font-weight: bold; color: #6366f1; font-family: 'Outfit', 'Inter', sans-serif; letter-spacing: 1px; margin: 0 0 8px 0;">StudyPulse</div>
   </div>
 `;
 
 const baseFooter = `
   <div style="text-align: center; margin-top: 24px; font-size: 12px; color: #4b5563; font-family: 'Inter', sans-serif; line-height: 1.5;">
-    <p>Email ini dikirim otomatis oleh sistem TugasKu Portal.</p>
-    <p>© 2026 TugasKu. Hak Cipta Dilindungi.</p>
+    <p>Email ini dikirim otomatis oleh sistem StudyPulse.</p>
+    <p>© 2026 StudyPulse. Hak Cipta Dilindungi.</p>
   </div>
 `;
 
@@ -43,7 +43,7 @@ export function getTaskNotificationHtml({
   return `
     <div style="background-color: #090d16; color: #f3f4f6; padding: 40px 20px; margin: 0 auto; max-width: 600px; font-family: 'Inter', sans-serif;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">TugasKu Portal</div>
+        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">StudyPulse</div>
         <div style="display: inline-block; background-color: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(99, 102, 241, 0.3);">Tugas Baru Terbit</div>
       </div>
       
@@ -99,7 +99,7 @@ export function getDeadlineReminderHtml({
   return `
     <div style="background-color: #090d16; color: #f3f4f6; padding: 40px 20px; margin: 0 auto; max-width: 600px; font-family: 'Inter', sans-serif;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">TugasKu Portal</div>
+        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">StudyPulse</div>
         <div style="display: inline-block; background-color: ${bgSoft}; color: ${themeColor}; border: 1px solid ${borderSoft}; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px;">
           ${badgeText}
         </div>
@@ -162,7 +162,7 @@ export function getGradeNotificationHtml({
   return `
     <div style="background-color: #090d16; color: #f3f4f6; padding: 40px 20px; margin: 0 auto; max-width: 600px; font-family: 'Inter', sans-serif;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">TugasKu Portal</div>
+        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">StudyPulse</div>
         <div style="display: inline-block; background-color: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.3);">Nilai Telah Terbit</div>
       </div>
       
@@ -212,14 +212,14 @@ export function getPasswordResetHtml({
   return `
     <div style="background-color: #090d16; color: #f3f4f6; padding: 40px 20px; margin: 0 auto; max-width: 600px; font-family: 'Inter', sans-serif;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">TugasKu Portal</div>
+        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">StudyPulse</div>
         <div style="display: inline-block; background-color: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(99, 102, 241, 0.3);">Atur Ulang Kata Sandi</div>
       </div>
       
       <div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 32px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);">
         <h2 style="font-size: 22px; font-weight: 700; color: #ffffff; margin: 0 0 16px 0; line-height: 1.4;">Halo, ${escapeHtml(name)}!</h2>
         <p style="font-size: 15px; line-height: 1.6; color: #d1d5db; margin: 0;">
-          Kami menerima permintaan untuk mengatur ulang kata sandi akun TugasKu Anda. 
+          Kami menerima permintaan untuk mengatur ulang kata sandi akun StudyPulse Anda. 
           Klik tombol di bawah ini untuk masuk ke halaman pengaturan sandi baru Anda:
         </p>
 
@@ -259,14 +259,14 @@ export function getVerificationHtml({
   return `
     <div style="background-color: #090d16; color: #f3f4f6; padding: 40px 20px; margin: 0 auto; max-width: 600px; font-family: 'Inter', sans-serif;">
       <div style="text-align: center; margin-bottom: 24px;">
-        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">TugasKu Portal</div>
+        <div style="font-size: 28px; font-weight: bold; color: #6366f1; letter-spacing: 1px; margin: 0 0 8px 0;">StudyPulse</div>
         <div style="display: inline-block; background-color: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 9999px; border: 1px solid rgba(99, 102, 241, 0.3);">Aktivasi Akun</div>
       </div>
       
       <div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 32px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);">
-        <h2 style="font-size: 22px; font-weight: 700; color: #ffffff; margin: 0 0 16px 0; line-height: 1.4;">Selamat Datang di TugasKu, ${escapeHtml(name)}!</h2>
+        <h2 style="font-size: 22px; font-weight: 700; color: #ffffff; margin: 0 0 16px 0; line-height: 1.4;">Selamat Datang di StudyPulse, ${escapeHtml(name)}!</h2>
         <p style="font-size: 15px; line-height: 1.6; color: #d1d5db; margin: 0;">
-          Terima kasih telah bergabung di TugasKu Portal. Langkah terakhir untuk mengaktifkan akun Anda 
+          Terima kasih telah bergabung di StudyPulse. Langkah terakhir untuk mengaktifkan akun Anda 
           dan mengakses dashboard mahasiswa adalah dengan memverifikasi alamat email Anda.
         </p>
 
@@ -286,7 +286,7 @@ export function getVerificationHtml({
         <div style="height: 1px; background-color: #1f2937; margin: 24px 0;"></div>
 
         <p style="font-size: 13px; line-height: 1.5; color: #9ca3af; margin: 0;">
-          Jika Anda merasa tidak mendaftar di TugasKu Portal, Anda dapat mengabaikan email ini dengan aman.
+          Jika Anda merasa tidak mendaftar di StudyPulse, Anda dapat mengabaikan email ini dengan aman.
         </p>
       </div>
       ${baseFooter}
